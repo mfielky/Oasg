@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown to January 20, 2029</title>
+  <style>
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #0d1b31;
+      --text: #f5f7fb;
+      --muted: rgba(245, 247, 251, 0.72);
+      --red: #b22234;
+      --white: #f8f8f8;
+      --blue: #3c3b6e;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 35%),
+        linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", Times, serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.18),
+        rgba(255,255,255,0.04)
+      );
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      padding: 56px 40px 48px;
+      text-align: center;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 5px;
+      background: linear-gradient(
+        90deg,
+        var(--red) 0 33%,
+        var(--white) 33% 66%,
+        var(--blue) 66% 100%
+      );
+      opacity: 0.95;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 2vw, 2.1rem);
+      line-height: 1.2;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .countdown {
+      margin: 34px 0 20px;
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
+      line-height: 0.95;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-shadow: 0 0 22px rgba(255,255,255,0.08);
+    }
+
+    .divider {
+      width: 160px;
+      height: 1px;
+      margin: 26px auto 20px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.55),
+        transparent
+      );
+    }
+
+    .subtext {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.96rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.86rem;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 36px 22px 34px;
+        border-radius: 22px;
+      }
+
+      .shell::before {
+        border-radius: 22px;
+      }
+
+      .countdown {
+        margin-top: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="eyebrow">Countdown</div>
+      <h1>Time Until January 20, 2029</h1>
+
+      <div class="countdown" id="countdown">Loading...</div>
+
+      <div class="divider"></div>
+
+      <p class="subtext">Next United States Presidential Inauguration</p>
+      <p class="footer">Updated automatically</p>
+    </section>
+  </main>
+
+  <script>
+    const targetDate = new Date("2029-01-20T12:00:00-05:00");
+
+    function calculateCountdown() {
+      const now = new Date();
+
+      if (now >= targetDate) {
+        return { years: 0, days: 0 };
+      }
+
+      let years = targetDate.getFullYear() - now.getFullYear();
+
+      let anniversary = new Date(now);
+      anniversary.setFullYear(now.getFullYear() + years);
+
+      if (anniversary > targetDate) {
+        years--;
+        anniversary = new Date(now);
+        anniversary.setFullYear(now.getFullYear() + years);
+      }
+
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const days = Math.floor((targetDate - anniversary) / msPerDay);
+
+      return { years, days };
+    }
+
+    function formatCountdown(years, days) {
+      const yearLabel = years === 1 ? "year" : "years";
+      const dayLabel = days === 1 ? "day" : "days";
+      return `${years} ${yearLabel}, ${days} ${dayLabel}`;
+    }
+
+    function updateCountdown() {
+      const el = document.getElementById("countdown");
+      const result = calculateCountdown();
+      el.textContent = formatCountdown(result.years, result.days);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 60 * 60 * 1000);
+  </script>
+</body>
+</html>
