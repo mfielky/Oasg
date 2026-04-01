@@ -3,31 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown to January 20, 2029</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        .countdown { font-size: 48px; }
-    </style>
-</head>
-<body>
-    <h1>Countdown to January 20, 2029</h1>
-    <div class="countdown" id="countdown"></div>
+    <title>Countdown</title>
     <script>
-        const countdownDate = new Date('January 20, 2029 00:00:00').getTime();
+        function updateCountdown() {
+            const endDate = new Date('2029-01-20T00:00:00Z');
+            const currentDate = new Date('2026-04-01T04:30:06Z'); // Current date
+            const totalSeconds = Math.floor((endDate - currentDate) / 1000);
 
-        const interval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = countdownDate - now;
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            if (distance < 0) {
-                clearInterval(interval);
-                document.getElementById('countdown').innerHTML = 'EXPIRED';
-            }
-        }, 1000);
+            // Calculate years and days
+            const years = Math.floor(totalSeconds / (365 * 24 * 60 * 60));
+            const days = Math.floor((totalSeconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
+
+            const countdownDisplay = `${years} years and ${days} days`;
+            document.getElementById('countdown').innerText = countdownDisplay;
+        }
+
+        setInterval(updateCountdown, 1000);
     </script>
+</head>
+<body onload="updateCountdown()">
+    <h1>Countdown to January 20, 2029</h1>
+    <div id="countdown"></div>
 </body>
 </html>
